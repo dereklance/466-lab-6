@@ -1,7 +1,19 @@
 import csv, sys, math, random
 from operator import itemgetter
 
-def cosine_similarity(v1,v2):
+def filter_unrated_jokes(x1, x2):
+    v1 = []
+    v2 = []
+    for i in range(len(x1)):
+        if x1[i] == 99.0 or x2[i] == 99.0:
+            continue
+        v1.append(x1[i])
+        v2.append(x2[i])
+    return v1, v2
+
+def cosine_similarity(x1, x2):
+    v1, v2 = filter_unrated_jokes(x1, x2)
+
     sumxx, sumxy, sumyy = 0, 0, 0
     for i in range(len(v1)):
         x = v1[i]
@@ -9,9 +21,12 @@ def cosine_similarity(v1,v2):
         sumxx += x*x
         sumyy += y*y
         sumxy += x*y
-    return sumxy / math.sqrt(sumxx * sumyy)
+    denom = math.sqrt(sumxx * sumyy)
+    return sumxy / denom if denom != 0 else -1
 
-def pearson_correlation(v1, v2):
+def pearson_correlation(x1, x2):
+    v1, v2 = filter_unrated_jokes(v1, v2)
+
     N = len(v1)
     numerator = N * sum(x * y for x, y in zip(v1, v2)) - sum(v1) * sum(v2)
     denom1 = N * sum(x ** 2 for x in v1) - sum(v1) ** 2
@@ -46,13 +61,13 @@ def predict_rating(rating_matrix, user_id, item_id, n, similarity = cosine_simil
 def random_predict_rating(a, b, c, d):
     return random.random() * 20 - 10
 
-def main():
-    matrix = csv.parse(sys.argv[1])
-    n = int(sys.argv[2])
+def main(program_name, file_name, n):
+    matrix = csv.parse(file_name)
+    n = int(n)
     predicted_ratings = [predict_rating(matrix, 0, i, n) for i in range(100)]
     actual_ratings = matrix[0]
     differences = [None if act == 99.0 else pred - act for pred, act in zip(predicted_ratings, actual_ratings)]
     print(differences)
 
 if __name__ == '__main__':
-    main()
+    main(*sys.argv)

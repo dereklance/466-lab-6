@@ -16,9 +16,9 @@ def handle_arguments(args):
         print(usage_string)
         raise ValueError('You must provide 3 arguments')
 
-def main():
-    handle_arguments(sys.argv)
+def main(*args):
+    handle_arguments(args)
     evaluation.random_sampling(csv.parse('dataset.csv'), *map(int, sys.argv[1:]))
 
 if __name__ == '__main__':
-    main()
+    main(*sys.argv)
