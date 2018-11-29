@@ -1,4 +1,4 @@
-import csv, sys, math, random
+import csv, sys, math, random, time, bisect, heapq, numpy as np
 from operator import itemgetter
 
 def filter_unrated_jokes(x1, x2):
@@ -33,28 +33,44 @@ def pearson_correlation(x1, x2):
     denom2 = N * sum(y ** 2 for y in v2) - sum(v2) ** 2
     return numerator / math.sqrt(denom1 * denom2)
 
-def ordered_neighbors(rating_matrix, user_id, similarity_func):
+def ordered_neighbors(rating_matrix, user_id, item_id, similarity_func, n):
     rating_vector1 = rating_matrix[user_id]
     neighbors = []
     for index, rating_vector2 in enumerate(rating_matrix):
-        if index == user_id:
+        if index == user_id or rating_vector2[item_id] == 99.0:
             continue
         similarity = similarity_func(rating_vector1, rating_vector2)
-        neighbors.append((similarity, rating_vector2))
-    neighbors.sort(reverse = True, key = itemgetter(0))
-    return neighbors
+        neighbors.append((similarity, rating_vector2[item_id]))
+    return list(map(itemgetter(1), heapq.nlargest(n, neighbors, key=itemgetter(0))))
+
+def ordered_neighbors_optimized(rating_matrix, user_id, item_id, similarity_func, n):
+    rating_vector1 = rating_matrix[user_id]
+    neighbors = []
+    for index, rating_vector2 in enumerate(rating_matrix):
+        if index == user_id or rating_vector2[item_id] == 99.0:
+            continue
+        similarity = similarity_func(rating_vector1, rating_vector2)
+        neighbors.append((similarity, rating_vector2[item_id]))
+    np_array = np.array(neighbors, dtype=[('similarity', 'f4'), ('rating', 'f4')])
+    print(np_array.size)
+    x = np.partition(np_array, np_array.size - n + 1, order='similarity')
+    return x[-n:]
 
 def predict_rating(rating_matrix, user_id, item_id, n, similarity = cosine_similarity):
     rating = rating_matrix[user_id][item_id]
     rating_matrix[user_id][item_id] = 99.0
     rating_vector = rating_matrix[user_id]
-    neighbors = ordered_neighbors(rating_matrix, user_id, similarity)
+    neighbor_ratings = ordered_neighbors(rating_matrix, user_id, item_id, similarity, n)
+    predicted_rating = sum(neighbor_ratings) / len(neighbor_ratings)
+    rating_matrix[user_id][item_id] = rating
+    return predicted_rating
 
-    # might need to eliminate values of 99 from consideration
-    neighbor_ratings = list(filter(lambda rating: rating != 99.0, [vector[item_id] for _, vector in neighbors]))[:n]
-    predicted_rating = 1 / len(neighbor_ratings) * sum(neighbor_ratings)
-    ################
-
+def predict_rating_optimized(rating_matrix, user_id, item_id, n, similarity = cosine_similarity):
+    rating = rating_matrix[user_id][item_id]
+    rating_matrix[user_id][item_id] = 99.0
+    rating_vector = rating_matrix[user_id]
+    neighbor_ratings = ordered_neighbors_optimized(rating_matrix, user_id, item_id, similarity, n)
+    predicted_rating = sum(y for x,y in neighbor_ratings) / len(neighbor_ratings)
     rating_matrix[user_id][item_id] = rating
     return predicted_rating
 
@@ -63,11 +79,10 @@ def random_predict_rating(a, b, c, d):
 
 def main(program_name, file_name, n):
     matrix = csv.parse(file_name)
-    n = int(n)
-    predicted_ratings = [predict_rating(matrix, 0, i, n) for i in range(100)]
-    actual_ratings = matrix[0]
-    differences = [None if act == 99.0 else pred - act for pred, act in zip(predicted_ratings, actual_ratings)]
-    print(differences)
+    start_time = time.time()
+    rating = predict_rating(matrix, 0, 0, 500)
+    print(f'rating: {rating}, time: {time.time() - start_time} seconds')
+
 
 if __name__ == '__main__':
     main(*sys.argv)
