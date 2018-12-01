@@ -31,7 +31,8 @@ def pearson_correlation(x1, x2):
     numerator = N * sum(x * y for x, y in zip(v1, v2)) - sum(v1) * sum(v2)
     denom1 = N * sum(x ** 2 for x in v1) - sum(v1) ** 2
     denom2 = N * sum(y ** 2 for y in v2) - sum(v2) ** 2
-    return numerator / math.sqrt(denom1 * denom2)
+    denom = math.sqrt(denom1 * denom2)
+    return numerator / denom if denom != 0 else -2
 
 def ordered_neighbors(rating_matrix, user_id, item_id, similarity_func, n):
     rating_vector1 = rating_matrix[user_id]

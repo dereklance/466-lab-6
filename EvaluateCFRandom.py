@@ -1,6 +1,6 @@
 import evaluation, sys, os, csv_parser
 
-usage_string = f'usage: python3 {os.path.basename(__file__)} <method_num> <size> <repeats>'
+usage_string = f'usage: python3 {os.path.basename(__file__)} <method_num> <size> <repeats> [optional n]'
 
 def print_help_message():
     print(usage_string)
@@ -14,9 +14,9 @@ def handle_arguments(args):
     if len(args) == 1:
         print_help_message()
         sys.exit()
-    elif len(args) != 4:
+    elif len(args) != 4 and len(args) != 5:
         print(usage_string)
-        raise ValueError('You must provide 3 arguments')
+        raise ValueError('You must provide 3 or 4 arguments')
 
 def main(*args):
     handle_arguments(args)
