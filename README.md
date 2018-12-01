@@ -1,11 +1,13 @@
 # 466-lab-6
+Ian Battin: ianbattin0@gmail.com
+Derek Lance: dwalance@gmail.com
 
 Required libraries: matplotlib, numpy
 
-Method 1 - N Nearest Neighbors, Cosine similarity, Average Ranking
-Method 2 - N Nearest Neighbors, Pearson correlation, Average Ranking
-Method 3 -
-Method 4 -
+Method 1 - N Nearest Neighbors, Cosine similarity, Mean Utility
+Method 2 - N Nearest Neighbors, Pearson correlation, Mean Utility
+Method 3 - Mean Utility
+Method 4 - N Nearest Neighbors Adjusted Weighted Sum, Cosine Similarity
 
 EvaluateCFRandom.py
 usage: python3 EvaluateCFRandom.py <method_num> <size> <repeats> [optional n]

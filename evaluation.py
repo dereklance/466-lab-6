@@ -1,3 +1,6 @@
+# Ian Battin :ianbattin0@gmail.com
+# Derek Lance: dwlance@gmail.com
+
 import sys, csv_parser, n_nearest_neighbors
 import basic_predictors
 from random import randint

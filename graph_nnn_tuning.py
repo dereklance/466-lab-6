@@ -1,3 +1,6 @@
+# Ian Battin :ianbattin0@gmail.com
+# Derek Lance: dwlance@gmail.com
+
 import evaluation, sys, csv_parser, bisect, n_nearest_neighbors
 import matplotlib.pyplot as plt
 

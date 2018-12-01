@@ -1,3 +1,6 @@
+# Ian Battin :ianbattin0@gmail.com
+# Derek Lance: dwlance@gmail.com
+
 import n_nearest_neighbors
 import csv
 import csv_parser

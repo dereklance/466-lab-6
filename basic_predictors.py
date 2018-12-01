@@ -1,3 +1,6 @@
+# Ian Battin :ianbattin0@gmail.com
+# Derek Lance: dwlance@gmail.com
+
 def mean_utility(matrix, user, item):
   total_rating, count = 0, 0
   for i in range(len(matrix)):

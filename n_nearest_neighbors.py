@@ -1,3 +1,6 @@
+# Ian Battin :ianbattin0@gmail.com
+# Derek Lance: dwlance@gmail.com
+
 import csv_parser, sys, math, random, time, bisect, heapq, numpy as np
 from operator import itemgetter
 

@@ -1,3 +1,6 @@
+# Ian Battin :ianbattin0@gmail.com
+# Derek Lance: dwlance@gmail.com
+
 import evaluation, sys, os, csv_parser
 
 usage_string = f'usage: python3 {os.path.basename(__file__)} <method_num> <size> <repeats> [optional n]'
