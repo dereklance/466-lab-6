@@ -1,16 +1,25 @@
-import sys, csv, n_nearest_neighbors
+import sys, csv_parser, n_nearest_neighbors
+import basic_predictors
 from random import randint
 from statistics import mean, stdev
 
 methods = {
     1: lambda matrix, user_id, item_id, n:
-        n_nearest_neighbors.predict_rating(
+        n_nearest_neighbors.predict_rating_average(
             matrix, user_id, item_id, n, similarity = n_nearest_neighbors.cosine_similarity
         ),
     2: lambda matrix, user_id, item_id, n:
-    n_nearest_neighbors.predict_rating(
-        matrix, user_id, item_id, n, similarity = n_nearest_neighbors.pearson_correlation
-    )
+        n_nearest_neighbors.predict_rating_average(
+            matrix, user_id, item_id, n, similarity = n_nearest_neighbors.pearson_correlation
+        ),
+    3: lambda matrix, user_id, item_id, n:
+        basic_predictors.mean_utility(
+            matrix, user_id, item_id
+        ),
+    4: lambda matrix, user_id, item_id, n:
+        n_nearest_neighbors.adjusted_weighted_sum(
+            matrix, user_id, item_id, n, similarity = n_nearest_neighbors.cosine_similarity
+        )
 }
 
 def random_sample(matrix, size):
@@ -18,7 +27,7 @@ def random_sample(matrix, size):
     num_items = 100
     test_pairs = []
     for i in range(size):
-        rating = randint(0, num_users - 1), randint(0, num_items - 1)
+        rating = (randint(0, num_users - 1), randint(0, num_items - 1))
         while matrix[rating[0]][rating[1]] == 99.0:
             rating = randint(0, num_users - 1), randint(0, num_items - 1)
         test_pairs.append(rating)
@@ -61,8 +70,8 @@ def print_accuracy_measures(true_recommend, false_recommend, true_not_recommend,
     print('%-25s%-25i%-25i' % ('Should not Recommend', false_recommend, true_not_recommend))
     print()
 
-    precision = round(true_recommend / (true_recommend + false_recommend), 3)
-    recall = round(true_recommend / (true_recommend + false_not_recommend), 3)
+    precision = round(true_recommend + 1 / (true_recommend + false_recommend + 1), 3)
+    recall = round(true_recommend + 1 / (true_recommend + false_not_recommend + 1), 3)
     print('Precision:', precision)
     print('Recall:', recall)
     print('F-1 Measure:', round(2 * precision * recall / (precision + recall), 3))
@@ -71,7 +80,7 @@ def print_accuracy_measures(true_recommend, false_recommend, true_not_recommend,
     return accuracy
 
 
-def random_sampling(matrix, method_num, size, repeats, n=200):
+def random_sampling(matrix, method_num, size, repeats, n=20):
     mean_absolute_errors = []
     accuracies = []
     for i in range(repeats):
@@ -108,7 +117,7 @@ def random_sampling(matrix, method_num, size, repeats, n=200):
     return mean_accuracy
 
 def main():
-    matrix = csv.parse(sys.argv[1])
+    matrix = csv_parser.parse(sys.argv[1])
     # random_sampling(matrix, *map(int, sys.argv[2:]))
     user_specified(matrix, 1, [(0, 8), (15, 78), (22000, 43)])
 

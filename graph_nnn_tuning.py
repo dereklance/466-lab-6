@@ -1,4 +1,4 @@
-import evaluation, sys, csv, bisect, n_nearest_neighbors
+import evaluation, sys, csv_parser, bisect, n_nearest_neighbors
 import matplotlib.pyplot as plt
 
 def output_graph_to_png(n_vs_accuracy):
@@ -7,7 +7,7 @@ def output_graph_to_png(n_vs_accuracy):
     plt.savefig('nnn_tuning.png')
 
 def main(method_num, size, repeats):
-    # matrix = csv.parse('dataset.csv')
+    # matrix = csv_parser.parse('dataset.csv_parser')
     # accuracies = [(n, evaluation.random_sampling(matrix, method_num, size, repeats, n)) for n in range(5, 46, 5)]
     # print(accuracies)
 
