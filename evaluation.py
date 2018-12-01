@@ -71,7 +71,7 @@ def print_accuracy_measures(true_recommend, false_recommend, true_not_recommend,
     return accuracy
 
 
-def random_sampling(matrix, method_num, size, repeats, n=200):
+def random_sampling(matrix, method_num, size, repeats, n=30):
     mean_absolute_errors = []
     accuracies = []
     for i in range(repeats):
